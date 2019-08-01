@@ -1,0 +1,11 @@
+{
+  "name": "actual-lib",
+  "version": "0.0.1",
+  "description": "An API for Actual",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "node-ipc": "^9.1.1",
+    "uuid": "^3.3.2"
+  }
+}
