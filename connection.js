@@ -95,7 +95,7 @@ async function runWithBudget(id, func) {
 
 async function runImport(name, func) {
   return _run(async () => {
-    await send('api/start-import', { budgetName });
+    await send('api/start-import', { budgetName: name });
     await func();
     await send('api/finish-import');
   });
