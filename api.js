@@ -18,8 +18,13 @@ const utils = require('./utils');
 // imported_id;
 // subtransactions;
 
-function startBudgetImport(budgetName) {
-  return send('api/import-budget', { budgetName });
+async function batchBudgetUpdates(func) {
+  await send('api/batch-budget-start');
+  try {
+    await func();
+  } finally {
+    await send('api/batch-budget-end');
+  }
 }
 
 function getBudgetMonths() {
