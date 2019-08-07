@@ -166,6 +166,7 @@ module.exports = {
   runImport,
   utils,
 
+  batchBudgetUpdates,
   getBudgetMonths,
   getBudgetMonth,
 
