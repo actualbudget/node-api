@@ -1,5 +1,5 @@
 {
-  "name": "actual-lib",
+  "name": "node-actual",
   "version": "0.0.1",
   "description": "An API for Actual",
   "main": "api.js",
