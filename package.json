@@ -2,7 +2,7 @@
   "name": "actual-lib",
   "version": "0.0.1",
   "description": "An API for Actual",
-  "main": "index.js",
+  "main": "api.js",
   "license": "MIT",
   "dependencies": {
     "node-ipc": "^9.1.1",

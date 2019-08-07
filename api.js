@@ -1,5 +1,11 @@
-const { init, send, disconnect, runWithBudget } = require('./index');
-const { makeChildTransaction, updateSortOrders } = require('./internal');
+const {
+  init,
+  send,
+  disconnect,
+  runWithBudget,
+  runImport
+} = require('./connection');
+const utils = require('./utils');
 
 // account_id;
 // amount;
@@ -152,6 +158,8 @@ module.exports = {
   init,
   disconnect,
   runWithBudget,
+  runImport,
+  utils,
 
   getBudgetMonths,
   getBudgetMonth,
