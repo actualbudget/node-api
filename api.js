@@ -12,12 +12,24 @@ const { makeChildTransaction, updateSortOrders } = require('./internal');
 // imported_id;
 // subtransactions;
 
+function startBudgetImport(budgetName) {
+  return send('api/import-budget', { budgetName });
+}
+
 function getBudgetMonths() {
   return send('api/budget-months');
 }
 
 function getBudgetMonth(month) {
   return send('api/budget-month', { month });
+}
+
+function setBudgetAmount(month, categoryId, value) {
+  return send('api/budget-set-amount', { month, categoryId, value });
+}
+
+function setBudgetCarryover(month, categoryId, flag) {
+  return send('api/budget-set-carryover', { month, categoryId, flag });
 }
 
 function addTransaction(transaction) {

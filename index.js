@@ -67,9 +67,9 @@ function disconnect() {
   ipc.disconnect(socketClient.id);
 }
 
-async function runWithBudget(name, func) {
+async function _run(func) {
   try {
-    await init(name);
+    await init();
     await func();
   } catch (e) {
     if (e.type) {
@@ -86,4 +86,19 @@ async function runWithBudget(name, func) {
   }
 }
 
-module.exports = { init, send, disconnect, runWithBudget };
+async function runWithBudget(id, func) {
+  return _run(async () => {
+    await send('api/load-budget', { id });
+    await func();
+  });
+}
+
+async function runImport(name, func) {
+  return _run(async () => {
+    await send('api/start-import', { budgetName });
+    await func();
+    await send('api/finish-import');
+  });
+}
+
+module.exports = { init, send, disconnect, runWithBudget, runImport };
