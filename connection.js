@@ -53,8 +53,6 @@ async function init(budgetId) {
       throw new Error('Unknown message type: ' + JSON.stringify(msg));
     }
   });
-
-  // return send('load-budget', { id: budgetId });
 }
 
 function disconnect() {
@@ -68,23 +66,25 @@ async function _run(func) {
   } catch (e) {
     if (e.type) {
       if (e.type === 'APIError') {
-        console.log('*** APIError *** ', e.message);
+        console.log('*** APIError *** ', e.message, '\n\n');
       } else if (e.type === 'InternalError') {
-        console.log('*** InternalError *** ', e.message);
+        console.log('*** InternalError *** ', e.message, '\n\n');
       }
-    } else {
-      throw e;
     }
-  } finally {
+
+    await send('api/cleanup', { hasError: true });
     disconnect();
+
+    throw e;
   }
+
+  await send('api/cleanup');
+  disconnect();
 }
 
 async function runWithBudget(id, func) {
   return _run(async () => {
     await send('api/load-budget', { id });
-
-    // TODO: handle errors
     await func();
   });
 }
@@ -92,10 +92,7 @@ async function runWithBudget(id, func) {
 async function runImport(name, func) {
   return _run(async () => {
     await send('api/start-import', { budgetName: name });
-
-    // TODO: handle errors
     await func();
-
     await send('api/finish-import');
   });
 }
