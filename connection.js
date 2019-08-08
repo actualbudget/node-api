@@ -60,25 +60,24 @@ function disconnect() {
 }
 
 async function _run(func) {
+  let hasError = false;
+
   try {
     await init();
     await func();
   } catch (e) {
     if (e.type) {
       if (e.type === 'APIError') {
-        console.log('*** APIError *** ', e.message, '\n\n');
+        console.log('[ERROR] APIError:', e.message);
       } else if (e.type === 'InternalError') {
-        console.log('*** InternalError *** ', e.message, '\n\n');
+        console.log('[ERROR] InternalError:', e.message);
       }
     }
 
-    await send('api/cleanup', { hasError: true });
-    disconnect();
-
-    throw e;
+    hasError = true;
   }
 
-  await send('api/cleanup');
+  await send('api/cleanup', { hasError });
   disconnect();
 }
 
