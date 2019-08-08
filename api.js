@@ -36,7 +36,7 @@ function getBudgetMonth(month) {
 }
 
 function setBudgetAmount(month, categoryId, value) {
-  return send('api/budget-set-amount', { month, categoryId, value });
+  return send('api/budget-set-amount', { month, categoryId, amount: value });
 }
 
 function setBudgetCarryover(month, categoryId, flag) {
@@ -169,6 +169,8 @@ module.exports = {
   batchBudgetUpdates,
   getBudgetMonths,
   getBudgetMonth,
+  setBudgetAmount,
+  setBudgetCarryover,
 
   addTransaction,
   addTransactions,

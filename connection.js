@@ -20,18 +20,18 @@ function send(name, args) {
 async function init(budgetId) {
   socketClient = await findListeningSocket();
   if (!socketClient) {
-    // TODO: spawn actual
-    console.log("Couldn't connect");
-    return;
+    // TODO: This could spawn Actual
+    throw new Error("Couldn't connect to Actual. Please run the app first.");
   }
 
   socketClient.on('message', data => {
     const msg = JSON.parse(data);
 
     if (msg.type === 'error') {
-      // An error happened while handling a message so cleanup the
-      // current reply handler. We don't care about the actual error -
-      // a generic error handler can handle them
+      // The API should not be getting this message type anymore.
+      // Errors are propagated through the `reply` message which gives
+      // more context for which call made the error. Just in case,
+      // keep this code here for now.
       const { id } = msg;
       replyHandlers.delete(id);
     } else if (msg.type === 'reply') {
@@ -48,13 +48,7 @@ async function init(budgetId) {
         }
       }
     } else if (msg.type === 'push') {
-      // const { name, args } = msg;
-      // const listens = listeners.get(name);
-      // if (listens) {
-      //   listens.forEach(listener => {
-      //     listener(args);
-      //   });
-      // }
+      // Do nothing
     } else {
       throw new Error('Unknown message type: ' + JSON.stringify(msg));
     }
@@ -89,6 +83,8 @@ async function _run(func) {
 async function runWithBudget(id, func) {
   return _run(async () => {
     await send('api/load-budget', { id });
+
+    // TODO: handle errors
     await func();
   });
 }
@@ -96,7 +92,10 @@ async function runWithBudget(id, func) {
 async function runImport(name, func) {
   return _run(async () => {
     await send('api/start-import', { budgetName: name });
+
+    // TODO: handle errors
     await func();
+
     await send('api/finish-import');
   });
 }
