@@ -18,6 +18,10 @@ const utils = require('./utils');
 // imported_id;
 // subtransactions;
 
+async function loadBudget(budgetId) {
+  return send('api/load-budget', { id: budgetId });
+}
+
 async function batchBudgetUpdates(func) {
   await send('api/batch-budget-start');
   try {
@@ -166,6 +170,7 @@ module.exports = {
   runImport,
   utils,
 
+  loadBudget,
   batchBudgetUpdates,
   getBudgetMonths,
   getBudgetMonth,
