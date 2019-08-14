@@ -73,6 +73,8 @@ async function _run(func) {
       } else if (e.type === 'InternalError') {
         console.log('[ERROR] InternalError:', e.message);
       }
+    } else {
+      console.log(e);
     }
 
     hasError = true;
