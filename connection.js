@@ -61,10 +61,11 @@ function disconnect() {
 
 async function _run(func) {
   let hasError = false;
+  let res;
 
   try {
     await init();
-    await func();
+    res = await func();
   } catch (e) {
     if (e.type) {
       if (e.type === 'APIError') {
@@ -79,12 +80,13 @@ async function _run(func) {
 
   await send('api/cleanup', { hasError });
   disconnect();
+  return res;
 }
 
 async function runWithBudget(id, func) {
   return _run(async () => {
     await send('api/load-budget', { id });
-    await func();
+    return func();
   });
 }
 
