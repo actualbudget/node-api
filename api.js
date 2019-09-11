@@ -7,17 +7,6 @@ const {
 } = require('./connection');
 const utils = require('./utils');
 
-// account_id;
-// amount;
-// payee_id;
-// payee;
-// imported_payee;
-// category_id;
-// date;
-// notes;
-// imported_id;
-// subtransactions;
-
 async function loadBudget(budgetId) {
   return send('api/load-budget', { id: budgetId });
 }
@@ -45,10 +34,6 @@ function setBudgetAmount(month, categoryId, value) {
 
 function setBudgetCarryover(month, categoryId, flag) {
   return send('api/budget-set-carryover', { month, categoryId, flag });
-}
-
-function addTransaction(transaction) {
-  return addTransactions(transaction.account_id, [transaction]);
 }
 
 function addTransactions(accountId, transactions) {
@@ -103,8 +88,8 @@ function deleteAccount(id) {
   return send('api/account-delete', { id });
 }
 
-function getCategories({ asList } = {}) {
-  return send('api/categories-get', { asList });
+function getCategoryGroups() {
+  return send('api/categories-get', { grouped: true });
 }
 
 function createCategoryGroup(group) {
@@ -117,6 +102,10 @@ function updateCategoryGroup(id, fields) {
 
 function deleteCategoryGroup(id, transferCategoryId) {
   return send('api/category-group-delete', { id, transferCategoryId });
+}
+
+function getCategories() {
+  return send('api/categories-get', { grouped: false });
 }
 
 function createCategory(category) {
@@ -151,8 +140,8 @@ function getPayeeRules(payeeId) {
   return send('api/payee-rules-get', { payeeId });
 }
 
-function createPayeeRule(payee_id, rule) {
-  return send('api/payee-rule-create', { payee_id, rule });
+function createPayeeRule(payeeId, rule) {
+  return send('api/payee-rule-create', { payee_id: payeeId, rule });
 }
 
 function updatePayeeRule(id, fields) {

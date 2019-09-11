@@ -78,10 +78,12 @@ async function _run(func) {
     }
 
     hasError = true;
+    throw e;
+  } finally {
+    await send('api/cleanup', { hasError });
+    disconnect();
   }
 
-  await send('api/cleanup', { hasError });
-  disconnect();
   return res;
 }
 
