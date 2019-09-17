@@ -1,6 +1,6 @@
 let ipc = require('node-ipc');
 let uuid = require('uuid');
-let findListeningSocket = require('./find-listening-socket');
+let getSocket = require('./get-socket');
 
 process.traceProcessWarnings = true;
 ipc.config.silent = true;
@@ -17,10 +17,17 @@ function send(name, args) {
   });
 }
 
-async function init(budgetId) {
-  socketClient = await findListeningSocket();
+async function init(socketName) {
+  if (socketClient) {
+    return;
+  }
+
+  socketClient = await getSocket(socketName);
+
   if (!socketClient) {
-    // TODO: This could spawn Actual
+    // TODO: This could spawn Actual automatically. The ideal solution
+    // would be to bundle the entire backend and embed it directly
+    // into the distributed library.
     throw new Error("Couldn't connect to Actual. Please run the app first.");
   }
 
@@ -57,6 +64,7 @@ async function init(budgetId) {
 
 function disconnect() {
   ipc.disconnect(socketClient.id);
+  socketClient = null;
 }
 
 async function _run(func) {
