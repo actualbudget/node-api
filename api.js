@@ -166,7 +166,6 @@ module.exports = {
   setBudgetAmount,
   setBudgetCarryover,
 
-  addTransaction,
   addTransactions,
   importTransactions,
   filterTransactions,
