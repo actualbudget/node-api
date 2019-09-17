@@ -6,6 +6,7 @@ process.traceProcessWarnings = true;
 ipc.config.silent = true;
 let socketClient = null;
 let replyHandlers = new Map();
+let initialized = null;
 
 function send(name, args) {
   return new Promise((resolve, reject) => {
@@ -18,11 +19,12 @@ function send(name, args) {
 }
 
 async function init(socketName) {
-  if (socketClient) {
-    return;
+  // Support calling this multiple times before it actually connects
+  if (initialized) {
+    return initialized;
   }
-
-  socketClient = await getSocket(socketName);
+  initialized = getSocket(socketName);
+  socketClient = await initialized;
 
   if (!socketClient) {
     // TODO: This could spawn Actual automatically. The ideal solution
@@ -65,6 +67,7 @@ async function init(socketName) {
 function disconnect() {
   ipc.disconnect(socketClient.id);
   socketClient = null;
+  initialized = false;
 }
 
 async function _run(func) {
