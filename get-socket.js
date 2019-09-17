@@ -3,7 +3,7 @@ const os = require('os');
 const { join } = require('path');
 const ipc = require('node-ipc');
 
-function isSocketTaken(name, fn) {
+function connect(name) {
   return new Promise((resolve, reject) => {
     ipc.connectTo(name, () => {
       ipc.of[name].on('error', () => {
@@ -18,10 +18,14 @@ function isSocketTaken(name, fn) {
   });
 }
 
-async function findListeningSocket() {
+async function getSocket(name) {
+  if (name) {
+    return connect(name);
+  }
+
   let currentSocket = 1;
   let client = null;
-  while (!(client = await isSocketTaken('actual' + currentSocket))) {
+  while (!(client = await connect('actual' + currentSocket))) {
     currentSocket++;
 
     if (currentSocket >= 10) {
@@ -32,4 +36,4 @@ async function findListeningSocket() {
   return client;
 }
 
-module.exports = findListeningSocket;
+module.exports = getSocket;
