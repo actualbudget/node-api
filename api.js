@@ -180,10 +180,11 @@ module.exports = {
   reopenAccount,
   deleteAccount,
 
-  getCategories,
+  getCategoryGroups,
   createCategoryGroup,
   updateCategoryGroup,
   deleteCategoryGroup,
+  getCategories,
   createCategory,
   updateCategory,
   deleteCategory,

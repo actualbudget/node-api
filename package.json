@@ -1,6 +1,6 @@
 {
   "name": "@actual-app/api",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "An API for Actual",
   "main": "api.js",
   "license": "MIT",
