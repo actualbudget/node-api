@@ -76,26 +76,27 @@ async function init(socketName) {
 }
 
 function disconnect() {
-  ipc.disconnect(socketClient.id);
-  socketClient = null;
-  initialized = false;
+  if (socketClient) {
+    ipc.disconnect(socketClient.id);
+    socketClient = null;
+    initialized = false;
+  }
 }
 
 async function _run(func) {
-  let hasError = false;
   let res;
 
   try {
     await init();
     res = await func();
   } catch (e) {
-    hasError = true;
-    throw e;
-  } finally {
-    await send('api/cleanup', { hasError });
+    send('api/cleanup', { hasError: true });
     disconnect();
+    throw e;
   }
 
+  send('api/cleanup');
+  disconnect();
   return res;
 }
 
