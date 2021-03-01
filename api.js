@@ -5,6 +5,7 @@ const {
   runWithBudget,
   runImport
 } = require('./connection');
+const q = require('./query');
 const utils = require('./utils');
 
 async function loadBudget(budgetId) {
@@ -18,6 +19,10 @@ async function batchBudgetUpdates(func) {
   } finally {
     await send('api/batch-budget-end');
   }
+}
+
+function runQuery(query) {
+  return send('api/query', { query: query.serialize() });
 }
 
 function getBudgetMonths() {
@@ -159,6 +164,9 @@ module.exports = {
   runImport,
   utils,
 
+  runQuery,
+  q,
+
   loadBudget,
   batchBudgetUpdates,
   getBudgetMonths,
@@ -180,11 +188,10 @@ module.exports = {
   reopenAccount,
   deleteAccount,
 
-  getCategoryGroups,
+  getCategories,
   createCategoryGroup,
   updateCategoryGroup,
   deleteCategoryGroup,
-  getCategories,
   createCategory,
   updateCategory,
   deleteCategory,

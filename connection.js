@@ -8,6 +8,10 @@ let socketClient = null;
 let replyHandlers = new Map();
 let initialized = null;
 
+process.on('unhandledRejection', function(error, promise) {
+  console.log(error);
+});
+
 function send(name, args) {
   return new Promise((resolve, reject) => {
     let id = uuid.v4();
@@ -15,6 +19,13 @@ function send(name, args) {
     if (socketClient) {
       socketClient.emit('message', JSON.stringify({ id, name, args }));
     }
+  }).catch(err => {
+    if (typeof err === 'string' && err.includes('API Error')) {
+      // Throwing the error here captures the correct async stack trace.
+      // If we just let the promise reject
+      throw new Error(err);
+    }
+    throw err;
   });
 }
 
@@ -51,7 +62,7 @@ async function init(socketName) {
         replyHandlers.delete(id);
 
         if (error) {
-          handler.reject(error);
+          handler.reject('[API Error] ' + error.message);
         } else {
           handler.resolve(result);
         }
@@ -78,16 +89,6 @@ async function _run(func) {
     await init();
     res = await func();
   } catch (e) {
-    if (e.type) {
-      if (e.type === 'APIError') {
-        console.log('[ERROR] APIError:', e.message);
-      } else if (e.type === 'InternalError') {
-        console.log('[ERROR] InternalError:', e.message);
-      }
-    } else {
-      console.log(e);
-    }
-
     hasError = true;
     throw e;
   } finally {
